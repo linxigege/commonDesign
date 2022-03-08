@@ -21,11 +21,4 @@ public interface IdGenerator {
      * @return
      */
     String getId();
-
-    /**
-     * 获取编号
-     *
-     * @return
-     */
-    String getNumber();
 }

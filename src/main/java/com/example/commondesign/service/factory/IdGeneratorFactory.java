@@ -1,9 +1,14 @@
 package com.example.commondesign.service.factory;
 
 import com.example.commondesign.service.IdGenerator;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * @PROJECT_NAME: commonDesign
@@ -11,11 +16,22 @@ import java.util.concurrent.ConcurrentHashMap;
  * @AUTHOR: lx
  * @DATE: 2022/3/8 13:27
  */
-public class IdGeneratorFactory {
+@Service
+public class IdGeneratorFactory implements InitializingBean {
 
-    public static Map<String, IdGenerator> map;
+    private Map<String, IdGenerator> map = Collections.emptyMap();
 
-    static {
-        map = new ConcurrentHashMap<>(4);
+    @Resource
+    private ApplicationContext applicationContext;
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        // 记得别导错包
+        map = applicationContext.getBeansOfType(IdGenerator.class).values().
+                stream().collect(Collectors.toMap(IdGenerator::businessCode, handler -> handler));
+    }
+
+    public String getId(String code) {
+        return map.getOrDefault(code, map.get("default")).getId();
     }
 }

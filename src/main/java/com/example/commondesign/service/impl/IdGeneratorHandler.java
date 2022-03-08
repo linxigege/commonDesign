@@ -1,6 +1,7 @@
 package com.example.commondesign.service.impl;
 
 import com.example.commondesign.service.IdGenerator;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
@@ -18,9 +19,7 @@ abstract class IdGeneratorHandler implements IdGenerator {
      * @return
      */
     @Override
-    public String businessCode() {
-        return "default";
-    }
+    public abstract String businessCode();
 
     /**
      * 获取业务id
@@ -30,34 +29,23 @@ abstract class IdGeneratorHandler implements IdGenerator {
     @Override
     public String getId() {
         // return UUid
-        beforeGetId();
+        beforeGetId(businessCode());
         String returnId = UUID.randomUUID().toString().replace("-", "");
-        afterGetId();
+        afterGetId(returnId);
         return returnId;
     }
 
     /**
      * 在获取id前我可能有些想法
      */
-    public void beforeGetId() {
+    protected void beforeGetId(String code) {
 
     }
 
     /**
      * 获取完id之后我可能还有些想法
      */
-    public void afterGetId() {
+    protected void afterGetId(String returnId) {
 
-    }
-
-    /**
-     * 获取编号
-     *
-     * @return
-     */
-    @Override
-    public String getNumber() {
-        // return default:00000001 [一段编号]
-        return new StringBuilder(businessCode()).append(":").append("00000001").toString();
     }
 }
